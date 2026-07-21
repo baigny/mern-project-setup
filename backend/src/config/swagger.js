@@ -16,7 +16,7 @@ const options = {
         ],
     },
     //scan all routes for documentation
-    apis: ["./src/routes/**/*.js"], // Path to the API routes for documentation
+    apis: ["./src/app.js", "./src/routes/**/*.js"], // Path to the API routes for documentation
 };
 
 const swaggerSpec = swaggerJSDoc(options);
