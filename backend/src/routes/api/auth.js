@@ -1,6 +1,7 @@
 import  express from 'express';
-import { login, register } from '../../controllers/auth.js';
+import { login, register, me } from '../../controllers/auth.js';
 import {validate} from '../../middlewares/validate.js';
+import { authenticate } from '../../middlewares/auth.js';
 import { registerSchema, loginSchema } from'../../validators/auth.js';
 
 const router = express.Router();
@@ -51,5 +52,19 @@ router.post('/register', validate(registerSchema), register);
  */
 
 router.post('/login', validate(loginSchema), login);
+
+/**
+ * @openapi
+ * /api/auth/me:
+ *   get:
+ *     summary: Get the currently logged-in user
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200: { description: The authenticated user }
+ *       401: { description: Missing or invalid token }
+ */
+router.get('/me', authenticate, me);
 
 export default router;

@@ -1,6 +1,7 @@
 import swaggerJSDoc from "swagger-jsdoc";
 
 const options = {
+   
     definition: {
         openapi: "3.0.0",
         info: {
@@ -14,6 +15,15 @@ const options = {
                 description: "Local Development server",
             },
         ],
+        components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: "http",
+                    scheme: "bearer",
+                    bearerFormat: "JWT",
+                },
+            },
+        },
     },
     //scan all routes for documentation
     apis: ["./src/app.js", "./src/routes/**/*.js"], // Path to the API routes for documentation

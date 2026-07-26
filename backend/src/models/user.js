@@ -33,8 +33,8 @@ userSchema.pre('save', async function(next){
 
 //instance method to compare the password entered by the user with the hashed password stored in the database
 
-userSchema.methods.matchPassword = async function(enteredPassword){
-    return await bcrypt.compare( enteredPassword, this.password);   
+userSchema.methods.comparePassword = async function(enteredPassword){
+    return await bcrypt.compare( enteredPassword, this.password);
 }
 
 // Never leak passwords in the response, so we will remove the password field from the user object before sending it back to the client
