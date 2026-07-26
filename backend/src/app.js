@@ -1,12 +1,14 @@
 import express from "express";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./config/swagger.js";
+import authRoutes from "./routes/api/auth.js";
 
 const app = express();
 
 //Body Parsers 
 
 app.use(express.json());
+app.use("/api/auth", authRoutes);
 app.use(express.urlencoded({extended:true}));
 
 

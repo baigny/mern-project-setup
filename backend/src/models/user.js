@@ -3,11 +3,7 @@ import bcrypt from 'bcryptjs';
 
 const userSchema = new mongoose.Schema(
     {
-        name: {
-            type: String,
-            required: [true, "Name is required"],
-            trim: true,
-        },
+        username:{ type: String, required:true, trim:true},
         email:{
             type: String,
             required: [true, "Email id is required"],
