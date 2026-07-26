@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import User from "../models/User.js";
+import User from "../models/user.js";
 
 const generateToken = (user) => 
     jwt.sign({ id: user._id, isAdmin: user.isAdmin }, 
@@ -40,4 +40,8 @@ export const login = async(req, res) =>{
         token: generateToken(user),
         user: { id: user._id, username: user.username, email: user.email }
      });
+}
+
+export const me = async(req, res) =>{
+    res.status(200).json({ user: req.user });
 }
