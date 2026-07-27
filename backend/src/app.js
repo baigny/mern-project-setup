@@ -38,6 +38,12 @@ app.use(
   })
 );
 
+// Make the logged-in user available to every EJS view
+app.use((req, res, next) => {
+  res.locals.currentUser = req.session.user || null;
+  next();
+});
+
 // API docs
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
