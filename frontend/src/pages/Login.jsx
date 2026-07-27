@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { LogIn } from "lucide-react";
 import client from "../api/client.js";
+import { Button } from "@/components/ui/button";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -50,7 +52,9 @@ export default function Login() {
             <input type="password" name="password" value={form.password} onChange={handleChange} />
           </label>
         </p>
-        <button type="submit">Log in</button>
+        <Button type="submit">
+          <LogIn /> Log in
+        </Button>
       </form>
       <p>
         No account? <Link to="/register">Register</Link>

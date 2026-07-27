@@ -5,8 +5,8 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "dev": "node --watch --env-file=.env server.js",
-    "start": "node --env-file=.env server.js"
+    "dev": "node init && node --watch --env-file=.env server.js",
+    "start": "node init && node --env-file=.env server.js"
   },
   "keywords": [],
   "author": "",
