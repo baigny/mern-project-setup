@@ -1,0 +1,17 @@
+body {
+  font-family: system-ui, sans-serif;
+  max-width: 640px;
+  margin: 40px auto;
+  padding: 0 16px;
+  color: #1a1a1a;
+}
+nav {
+  display: flex;
+  gap: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 24px;
+}
+nav a { text-decoration: none; color: #2563eb; }
+li { margin: 6px 0; }
+footer { margin-top: 40px; color: #888; font-size: 0.9rem; }
