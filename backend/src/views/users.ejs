@@ -1,0 +1,15 @@
+<%- include("partials/header") %>
+
+<h1>Users</h1>
+
+<% if (users.length === 0) { %>
+  <p>No users yet — register one through the API first.</p>
+<% } else { %>
+  <ul>
+    <% users.forEach((user) => { %>
+      <li><strong><%= user.username %></strong> &mdash; <%= user.email %></li>
+    <% }) %>
+  </ul>
+<% } %>
+
+<%- include("partials/footer") %>
