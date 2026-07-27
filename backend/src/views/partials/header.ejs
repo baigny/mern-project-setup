@@ -7,9 +7,16 @@
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
-  <nav>
+ <nav>
     <a href="/">Home</a>
     <a href="/users">Users</a>
     <a href="/api-docs">API Docs</a>
+    <% if (currentUser) { %>
+      <a href="/dashboard">Dashboard</a>
+      <span>Hi, <%= currentUser.username %></span>
+    <% } else { %>
+      <a href="/login">Login</a>
+      <a href="/register">Register</a>
+    <% } %>
   </nav>
   <main>
