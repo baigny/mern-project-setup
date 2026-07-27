@@ -9,8 +9,13 @@ export const errorHandler = (err, req, res, next) => {
         return res.status(409).json({message: "Duplicate value entered"});
     }
 
+    // Malformed ObjectId (e.g. /api/admin/users/abc)
+    if (err.name === "CastError") {
+        return res.status(400).json({ message: `Invalid ${err.path}: ${err.value}` });
+    }
+
     const statusCode = err.statusCode || 500;
     const message = err.statusCode ? err.message : "Internal Server Error";
-    if (statusCode === 500) console.log(err);
+    if (statusCode === 500) console.error(err);
     res.status(statusCode).json({message});
 }

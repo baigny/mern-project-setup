@@ -7,6 +7,8 @@ import { fileURLToPath } from "node:url";
 
 import swaggerSpec from "./config/swagger.js";
 import authRoutes from "./routes/api/auth.js";
+import contactRoutes from "./routes/api/contact.js";
+import adminRoutes from "./routes/api/admin.js";
 import webRoutes from "./routes/web/routes.js";
 import { notFound, errorHandler } from "./middlewares/errors.js";
 
@@ -49,6 +51,10 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // JSON API routes
 app.use("/api/auth", authRoutes);
+
+app.use("/api/admin", adminRoutes);
+
+app.use("/api/contact", contactRoutes);
 
 // Server-rendered web routes
 app.use("/", webRoutes);

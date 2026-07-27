@@ -1,1 +1,0 @@
-import { authenticate } from "../../middlewares/auth.js";

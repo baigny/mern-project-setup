@@ -4,6 +4,11 @@ import { registerSchema, loginSchema } from "../../validators/auth.js";
 import { requireAuth, redirectIfAuth } from "../../middlewares/web-auth.js";
 const router = express.Router();
 
+function establishSession(req, user) {
+  req.session.userId = user._id;
+  req.session.user = { username: user.username, email: user.email };
+}
+
 router.get('/', (req, res) => {
     res.render("home", { title: "Home" });
 });
@@ -38,8 +43,7 @@ router.post("/register", redirectIfAuth, async (req, res) => {
   }
 
   const user = await User.create({ username, email, password });
-  req.session.userId = user._id;
-  req.session.user = { username: user.username, email: user.email };
+  establishSession(req, user);
   res.redirect("/dashboard");
 });
 
@@ -68,8 +72,7 @@ router.post("/login", redirectIfAuth, async (req, res) => {
     });
   }
 
-  req.session.userId = user._id;
-  req.session.user = { username: user.username, email: user.email };
+  establishSession(req, user);
   res.redirect("/dashboard");
 });
 
