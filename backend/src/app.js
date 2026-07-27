@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import swaggerUi from "swagger-ui-express";
@@ -16,6 +17,7 @@ import { notFound, errorHandler } from "./middlewares/errors.js";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
+app.use(cors({ origin: process.env.CLIENT_URL || "http://localhost:5173", credentials: true }));
 
 // View engine + static files
 app.set("view engine", "ejs");
