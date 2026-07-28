@@ -1,59 +1,54 @@
-import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { LogIn } from "lucide-react";
-import client from "../api/client.js";
+import { useAuthStore } from "../store/authStore.js";
 import { Button } from "@/components/ui/button";
+import { loginSchema } from "../lib/validators.js";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [errors, setErrors] = useState([]);
+  const login = useAuthStore((s) => s.login);
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm({ resolver: zodResolver(loginSchema) });
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrors([]);
+  const onSubmit = async (data) => {
     try {
-      const { data } = await client.post("/auth/login", form);
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("username", data.user.username);
+      await login(data.email, data.password);
       navigate("/");
     } catch (err) {
-      const data = err.response?.data;
-      setErrors(data?.errors?.map((er) => er.message) || [data?.message || "Login failed"]);
+      setError("root", { message: err.response?.data?.message || "Login failed" });
     }
   };
 
   return (
     <div>
+      <title>Login</title>
       <h1>Login</h1>
-      {errors.length > 0 && (
-        <ul>
-          {errors.map((msg) => (
-            <li key={msg}>{msg}</li>
-          ))}
-        </ul>
-      )}
-      <form onSubmit={handleSubmit}>
+      {errors.root && <p>{errors.root.message}</p>}
+      <form onSubmit={handleSubmit(onSubmit)}>
         <p>
           <label>
             Email
             <br />
-            <input type="email" name="email" value={form.email} onChange={handleChange} />
+            <input type="email" {...register("email")} />
           </label>
+          {errors.email && <span>{errors.email.message}</span>}
         </p>
         <p>
           <label>
             Password
             <br />
-            <input type="password" name="password" value={form.password} onChange={handleChange} />
+            <input type="password" {...register("password")} />
           </label>
+          {errors.password && <span>{errors.password.message}</span>}
         </p>
-        <Button type="submit">
-          <LogIn /> Log in
+        <Button type="submit" disabled={isSubmitting}>
+          <LogIn /> {isSubmitting ? "Logging in…" : "Log in"}
         </Button>
       </form>
       <p>
