@@ -1,63 +1,61 @@
-import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import client from "../api/client.js";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuthStore } from "../store/authStore.js";
+import { registerSchema } from "../lib/validators.js";
 
 export default function Register() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ username: "", email: "", password: "" });
-  const [errors, setErrors] = useState([]);
+  const registerUser = useAuthStore((s) => s.register);
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm({ resolver: zodResolver(registerSchema) });
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrors([]);
+  const onSubmit = async (data) => {
     try {
-      const { data } = await client.post("/auth/register", form);
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("username", data.user.username);
+      await registerUser(data.username, data.email, data.password);
       navigate("/");
     } catch (err) {
-      const data = err.response?.data;
-      setErrors(data?.errors?.map((er) => er.message) || [data?.message || "Registration failed"]);
+      setError("root", { message: err.response?.data?.message || "Registration failed" });
     }
   };
 
   return (
     <div>
+      <title>Register</title>
       <h1>Register</h1>
-      {errors.length > 0 && (
-        <ul>
-          {errors.map((msg) => (
-            <li key={msg}>{msg}</li>
-          ))}
-        </ul>
-      )}
-      <form onSubmit={handleSubmit}>
+      {errors.root && <p>{errors.root.message}</p>}
+      <form onSubmit={handleSubmit(onSubmit)}>
         <p>
           <label>
             Username
             <br />
-            <input name="username" value={form.username} onChange={handleChange} />
+            <input {...register("username")} />
           </label>
+          {errors.username && <span>{errors.username.message}</span>}
         </p>
         <p>
           <label>
             Email
             <br />
-            <input type="email" name="email" value={form.email} onChange={handleChange} />
+            <input type="email" {...register("email")} />
           </label>
+          {errors.email && <span>{errors.email.message}</span>}
         </p>
         <p>
           <label>
             Password
             <br />
-            <input type="password" name="password" value={form.password} onChange={handleChange} />
+            <input type="password" {...register("password")} />
           </label>
+          {errors.password && <span>{errors.password.message}</span>}
         </p>
-        <button type="submit">Create account</button>
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Creating…" : "Create account"}
+        </button>
       </form>
       <p>
         Already have an account? <Link to="/login">Log in</Link>

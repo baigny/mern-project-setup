@@ -1,63 +1,64 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import client from "../api/client.js";
+import { contactSchema } from "../lib/validators.js";
 
 export default function Contact() {
-  const [form, setForm] = useState({ username: "", email: "", message: "" });
-  const [status, setStatus] = useState(null);
-  const [errors, setErrors] = useState([]);
+  const [sent, setSent] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm({ resolver: zodResolver(contactSchema) });
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setStatus(null);
-    setErrors([]);
+  const onSubmit = async (data) => {
+    setSent(false);
     try {
-      await client.post("/contact", form);
-      setStatus("Message sent — thanks!");
-      setForm({ username: "", email: "", message: "" });
+      await client.post("/contact", data);
+      setSent(true);
+      reset();
     } catch (err) {
-      const data = err.response?.data;
-      setErrors(data?.errors?.map((er) => er.message) || [data?.message || "Something went wrong"]);
+      setError("root", { message: err.response?.data?.message || "Something went wrong" });
     }
   };
 
   return (
     <div>
+      <title>Contact</title>
       <h1>Contact</h1>
-      {status && <p>{status}</p>}
-      {errors.length > 0 && (
-        <ul>
-          {errors.map((msg) => (
-            <li key={msg}>{msg}</li>
-          ))}
-        </ul>
-      )}
-      <form onSubmit={handleSubmit}>
+      {sent && <p>Message sent — thanks!</p>}
+      {errors.root && <p>{errors.root.message}</p>}
+      <form onSubmit={handleSubmit(onSubmit)}>
         <p>
           <label>
             Name
             <br />
-            <input name="username" value={form.username} onChange={handleChange} />
+            <input {...register("username")} />
           </label>
+          {errors.username && <span>{errors.username.message}</span>}
         </p>
         <p>
           <label>
             Email
             <br />
-            <input type="email" name="email" value={form.email} onChange={handleChange} />
+            <input type="email" {...register("email")} />
           </label>
+          {errors.email && <span>{errors.email.message}</span>}
         </p>
         <p>
           <label>
             Message
             <br />
-            <textarea name="message" value={form.message} onChange={handleChange} />
+            <textarea {...register("message")} />
           </label>
+          {errors.message && <span>{errors.message.message}</span>}
         </p>
-        <button type="submit">Send</button>
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Sending…" : "Send"}
+        </button>
       </form>
     </div>
   );

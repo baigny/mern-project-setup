@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
+import { useAuthStore } from "./store/authStore.js";
 import Layout from "./components/Layout.jsx";
 import Home from "./pages/Home.jsx";
 import Contact from "./pages/Contact.jsx";
@@ -7,6 +9,15 @@ import Register from "./pages/Register.jsx";
 import NotFound from "./pages/NotFound.jsx";
 
 export default function App() {
+  const loading = useAuthStore((s) => s.loading);
+  const init = useAuthStore((s) => s.init);
+
+  useEffect(() => {
+    init();
+  }, [init]);
+
+  if (loading) return <p style={{ padding: 24 }}>Loading…</p>;
+
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
