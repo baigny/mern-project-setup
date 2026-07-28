@@ -1,13 +1,14 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/authStore.js";
 
 export default function Layout() {
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
-  const username = localStorage.getItem("username");
+  const user = useAuthStore((s) => s.user);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const logout = useAuthStore((s) => s.logout);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("username");
+    logout();
     navigate("/");
   };
 
@@ -16,9 +17,9 @@ export default function Layout() {
       <nav>
         <Link to="/">Home</Link>
         <Link to="/contact">Contact</Link>
-        {token ? (
+        {isAuthenticated ? (
           <>
-            <span>Hi, {username}</span>
+            <span>Hi, {user.username}</span>
             <button type="button" onClick={handleLogout}>
               Log out
             </button>
