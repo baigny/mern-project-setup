@@ -1,5 +1,9 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
+import { LogOut } from "lucide-react";
+import { ToastContainer } from "react-toastify";
 import { useAuthStore } from "../store/authStore.js";
+import { Button } from "@/components/ui/button";
+import Footer from "./Footer.jsx";
 
 export default function Layout() {
   const navigate = useNavigate();
@@ -13,27 +17,44 @@ export default function Layout() {
   };
 
   return (
-    <>
-      <nav>
-        <Link to="/">Home</Link>
-        <Link to="/contact">Contact</Link>
-        {isAuthenticated ? (
-          <>
-            <span>Hi, {user.username}</span>
-            <button type="button" onClick={handleLogout}>
-              Log out
-            </button>
-          </>
-        ) : (
-          <>
-            <Link to="/login">Login</Link>
-            <Link to="/register">Register</Link>
-          </>
-        )}
+    <div className="flex min-h-screen flex-col">
+      <ToastContainer position="top-right" autoClose={3000} theme="colored" />
+      <nav className="flex items-center justify-between gap-4 border-b border-border px-4 py-3">
+        <div className="flex items-center gap-4">
+          <Link to="/" className="font-semibold text-foreground hover:text-primary">
+            Home
+          </Link>
+          <Link to="/about" className="text-muted-foreground hover:text-foreground">
+            About
+          </Link>
+          <Link to="/contact" className="text-muted-foreground hover:text-foreground">
+            Contact
+          </Link>
+        </div>
+        <div className="flex items-center gap-3">
+          {isAuthenticated ? (
+            <>
+              <span className="text-sm text-muted-foreground">Hi, {user.username}</span>
+              <Button type="button" variant="outline" size="sm" onClick={handleLogout}>
+                <LogOut /> Log out
+              </Button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="text-muted-foreground hover:text-foreground">
+                Login
+              </Link>
+              <Link to="/register" className="text-muted-foreground hover:text-foreground">
+                Register
+              </Link>
+            </>
+          )}
+        </div>
       </nav>
-      <main>
+      <main className="flex-1">
         <Outlet />
       </main>
-    </>
+      <Footer />
+    </div>
   );
 }
