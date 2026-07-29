@@ -1,27 +1,24 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "react-toastify";
 import client from "../api/client.js";
 import { contactSchema } from "../lib/validators.js";
 
 export default function Contact() {
-  const [sent, setSent] = useState(false);
   const {
     register,
     handleSubmit,
     reset,
-    setError,
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(contactSchema) });
 
   const onSubmit = async (data) => {
-    setSent(false);
     try {
       await client.post("/contact", data);
-      setSent(true);
+      toast.success("Message sent — thanks!");
       reset();
     } catch (err) {
-      setError("root", { message: err.response?.data?.message || "Something went wrong" });
+      toast.error(err.response?.data?.message || "Something went wrong");
     }
   };
 
@@ -29,8 +26,6 @@ export default function Contact() {
     <div>
       <title>Contact</title>
       <h1>Contact</h1>
-      {sent && <p>Message sent — thanks!</p>}
-      {errors.root && <p>{errors.root.message}</p>}
       <form onSubmit={handleSubmit(onSubmit)}>
         <p>
           <label>
