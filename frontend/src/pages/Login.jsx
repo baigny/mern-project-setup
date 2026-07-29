@@ -1,6 +1,7 @@
 import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "react-toastify";
 import { LogIn } from "lucide-react";
 import { useAuthStore } from "../store/authStore.js";
 import { Button } from "@/components/ui/button";
@@ -12,16 +13,16 @@ export default function Login() {
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(loginSchema) });
 
   const onSubmit = async (data) => {
     try {
       await login(data.email, data.password);
+      toast.success("Welcome back!");
       navigate("/");
     } catch (err) {
-      setError("root", { message: err.response?.data?.message || "Login failed" });
+      toast.error(err.response?.data?.message || "Login failed");
     }
   };
 
@@ -29,7 +30,6 @@ export default function Login() {
     <div>
       <title>Login</title>
       <h1>Login</h1>
-      {errors.root && <p>{errors.root.message}</p>}
       <form onSubmit={handleSubmit(onSubmit)}>
         <p>
           <label>

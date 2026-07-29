@@ -1,6 +1,7 @@
 import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "react-toastify";
 import { useAuthStore } from "../store/authStore.js";
 import { registerSchema } from "../lib/validators.js";
 
@@ -10,16 +11,16 @@ export default function Register() {
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(registerSchema) });
 
   const onSubmit = async (data) => {
     try {
       await registerUser(data.username, data.email, data.password);
+      toast.success("Account created!");
       navigate("/");
     } catch (err) {
-      setError("root", { message: err.response?.data?.message || "Registration failed" });
+      toast.error(err.response?.data?.message || "Registration failed");
     }
   };
 
@@ -27,7 +28,6 @@ export default function Register() {
     <div>
       <title>Register</title>
       <h1>Register</h1>
-      {errors.root && <p>{errors.root.message}</p>}
       <form onSubmit={handleSubmit(onSubmit)}>
         <p>
           <label>
