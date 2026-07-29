@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import { useAuthStore } from "./store/authStore.js";
 import Layout from "./components/Layout.jsx";
 import Home from "./pages/Home.jsx";
+import About from "./pages/About.jsx";
 import Contact from "./pages/Contact.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
@@ -22,6 +23,7 @@ export default function App() {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
+        <Route path="about" element={<About />} />
         <Route path="contact" element={<Contact />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
